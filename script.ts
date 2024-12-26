@@ -62,7 +62,7 @@ class Calculator {
             throw new Error('Memory is empty');
         }
         if (value === 0) {
-            throw new Error('Division by zero');
+            throw new Error('Деление на ноль');
         }
         const result = this.memory / value;
         this.memory = result;
@@ -93,17 +93,17 @@ class Calculator {
 }
 
 // Создание экземпляра калькулятора с начальным значением
-const calc = new Calculator(10);
+const calc = new Calculator(10)
 
-// Цепочка операций
-calc.plus(5);       // (10) + 5
-calc.multiply(3);   // (15) * 3
-calc.divide(45);    // (45) / 45
-calc.clear();       // Очистка
-calc.set(3);        // Установили 3
-calc.pow(2);        // (3) ^ 2
-calc.minus(4);      // (9) - 4
-calc.clear();       // Очистка
 
-// Вывод истории операций
-calc.getHistory();
+calc.plus(5);
+calc.plus(5);
+calc.multiply(3);
+calc.divide(45)
+calc.clear()
+calc.set(3)
+calc.pow(2)
+calc.minus(4)
+calc.multiply(2)
+calc.clear();
+
