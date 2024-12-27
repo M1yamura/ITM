@@ -1,6 +1,7 @@
 class Calculator {
-    private memory: number | null = null;
+    private result: number;
     private history: string[] = [];
+    private options: Intl.NumberFormatOptions = { maximumFractionDigits: 2 }; // Опции для форматирования чисел
 
     constructor(initialValue?: number) {
         if (initialValue!== undefined) {
@@ -8,102 +9,94 @@ class Calculator {
         }
     }
 
-    private logOperation(operation: string, value: number, result: number): void {
-        console.log(` Memory: ${this.memory} | Operation: ${operation}(${value}) | Result: ${result} `);
-        this.history.push(` Memory: ${this.memory} | Operation: ${operation}(${value}) | Result: ${result} `);
+    private logOperation(operation: string, value: number, memory: number, result: number): void {
+        const formattedResult = this.formatNumber(memory);
+        const formattedValue = this.formatNumber(value);
+        const formattedMemory = this.formatNumber(this.result);
+        const logMessage = `Память: ${formattedMemory}  | Операция: ${operation}(${formattedValue}) | Результат: ${formattedResult}`;
+        console.log(logMessage);
+        this.history.push(logMessage);
     }
 
     private validateNumber(value: number): void {
         if (isNaN(value)) {
-            throw new Error('Argument must be a valid number (not NaN)');
+            throw new Error('Число должно быть действительным');
         }
     }
 
-    public set(value: number): void {
-        this.validateNumber(value);
-        this.memory = value;
-        console.log(`Memory set to: ${value}`);
-        this.history.push(`Memory set to: ${value}`);
+    private formatNumber(value: number): string { //задаём ограничение на кол-во чисе после запятой
+        return new Intl.NumberFormat([],this.options).format(value);
     }
 
-    public plus(value: number): void {
+    public set(value: number): void {  //установка числа
         this.validateNumber(value);
-        if (this.memory === null) {
-            throw new Error('Memory is empty');
-        }
-        const result = this.memory + value;
-        this.memory = result;
-        this.logOperation('Plus', value, result);
+        this.result = value;
+        const logMessage = `Число задано: ${this.formatNumber(value)}`;
+        console.log(logMessage);
+        this.history.push(logMessage);
     }
 
-    public minus(value: number): void {
+    public plus(value: number): void {  //плюс
         this.validateNumber(value);
-        if (this.memory === null) {
-            throw new Error('Memory is empty');
-        }
-        const result = this.memory - value;
-        this.memory = result;
-        this.logOperation('Minus', value, result);
+        const memory:number = this.result + value;
+        this.logOperation('Сложение', value, memory, this.result);
+        this.result = memory;
     }
 
-    public multiply(value: number): void {
+    public minus(value: number): void { //минус
         this.validateNumber(value);
-        if (this.memory === null) {
-            throw new Error('Memory is empty');
-        }
-        const result = this.memory * value;
-        this.memory = result;
-        this.logOperation('Multiply', value, result);
+        const memory:number = this.result - value;
+        this.logOperation('Вычитание', value, memory, this.result);
+        this.result = memory;
     }
 
-    public divide(value: number): void {
+    public multiply(value: number): void { //умножение
         this.validateNumber(value);
-        if (this.memory === null) {
-            throw new Error('Memory is empty');
-        }
+        const memory:number = this.result * value;
+        this.logOperation('Умножение', value, memory, this.result);
+        this.result = memory;
+    }
+
+    public divide(value: number): void {  //деление
+        this.validateNumber(value);
         if (value === 0) {
             throw new Error('Деление на ноль');
         }
-        const result = this.memory / value;
-        this.memory = result;
-        this.logOperation('Divide', value, result);
+        const memory:number = this.result / value;
+        this.logOperation('Деление', value, memory, this.result);
+        this.result = memory;
     }
 
-    public pow(exponent: number): void {
+    public pow(exponent: number): void { //степень
         this.validateNumber(exponent);
-        if (this.memory === null) {
-            throw new Error('Memory is empty');
-        }
-        const result = Math.pow(this.memory, exponent);
-        this.memory = result;
-        this.logOperation('Pow', exponent, result);
+        const memory:number = Math.pow(this.result, exponent);
+        this.logOperation('Возведение на степень', exponent, memory, this.result);
+        this.result = memory;
     }
 
-    public clear(): void {
-        this.memory = null;
-        console.log('Memory cleared');
-        this.history.push('Memory cleared');
+    public clear(): void { //очистка
+        this.result = null;
+        console.log('Память очищена');
+        this.history.push('Память очищена');
     }
 
-    public getHistory(): void{
-        console.log('--- Operation History ---');
+    public getHistory(): void { //типо, история
+        console.log('___________ИСТОРИЯ____________');
         this.history.forEach((entry) => console.log(entry));
-        console.log('--- End of History ---');
+        console.log('_____________КОНЕЦ____________');
     }
 }
 
-// Создание экземпляра калькулятора с начальным значением
-const calc = new Calculator(10)
 
-
+const calc = new Calculator(10);
 calc.plus(5);
 calc.plus(5);
 calc.multiply(3);
-calc.divide(45)
-calc.clear()
-calc.set(3)
-calc.pow(2)
-calc.minus(4)
-calc.multiply(2)
+calc.divide(45);
 calc.clear();
-
+calc.set(3);
+calc.pow(2);
+calc.minus(4);
+calc.multiply(2);
+calc.clear();
+// calc.getHistory();  // получении истории
